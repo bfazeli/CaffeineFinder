@@ -1,5 +1,8 @@
 package edu.orangecoastcollege.cs273.caffeinefinder;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * The <code>Location</code> class represents a place where one can get a caffeine fix, including
  * its name, address, phone number and latitude/longitude location.
@@ -7,7 +10,7 @@ package edu.orangecoastcollege.cs273.caffeinefinder;
  * @author Michael Paulding
  */
 
-public class Location {
+public class Location implements Parcelable {
     private int mId;
     private String mName;
     private String mAddress;
@@ -32,6 +35,18 @@ public class Location {
 
     public Location(String name, String address, String city, String state, String zipCode, String phone, double latitude, double longitude) {
         this(-1, name, address, city, state, zipCode, phone, latitude, longitude);
+    }
+
+    protected Location(Parcel in) {
+        mId = in.readInt();
+        mName = in.readString();
+        mAddress = in.readString();
+        mCity = in.readString();
+        mState = in.readString();
+        mZipCode = in.readString();
+        mPhone = in.readString();
+        mLatitude = in.readDouble();
+        mLongitude = in.readDouble();
     }
 
     public int getId() {
@@ -102,6 +117,18 @@ public class Location {
         mLongitude = longitude;
     }
 
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        @Override
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
+
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
+
     public String getFullAddress()
     {
         return mAddress + "\n" + mCity + ", " + mState + "  " + mZipCode;
@@ -120,5 +147,23 @@ public class Location {
                 ", Latitute=" + mLatitude +
                 ", Longitude=" + mLongitude +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mName);
+        dest.writeString(mAddress);
+        dest.writeString(mCity);
+        dest.writeString(mState);
+        dest.writeString(mZipCode);
+        dest.writeString(mPhone);
+        dest.writeDouble(mLatitude);
+        dest.writeDouble(mLongitude);
     }
 }

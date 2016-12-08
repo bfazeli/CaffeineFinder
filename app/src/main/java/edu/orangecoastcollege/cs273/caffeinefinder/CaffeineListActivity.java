@@ -1,14 +1,22 @@
 package edu.orangecoastcollege.cs273.caffeinefinder;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 
 import java.util.List;
 
@@ -53,7 +61,25 @@ public class CaffeineListActivity extends AppCompatActivity implements OnMapRead
         {
             LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
             // Add a marker at that coordinate
-            googleMap.addMarker(new MarkerOptions().position(coordinate).title(location.getName()));
+            mMap.addMarker(new MarkerOptions().position(coordinate).title(location.getName()));
+        }
+
+        // change camera view to our current position:
+        LatLng currentPosition = new LatLng(33.671028,-117.911305);
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(14.0f).build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        mMap.moveCamera(cameraUpdate);
+
+    }
+
+    public void viewLocationDetails(View view)
+    {
+        if(view instanceof LinearLayout) {
+            LinearLayout selectedLayout = (LinearLayout) view;
+            Location selectedLocation = (Location) selectedLayout.getTag();
+            Intent intent = new Intent(this, CaffeineDetailsActivity.class);
+            intent.putExtra("Location", selectedLocation);
+            startActivity(intent);
         }
     }
 }
